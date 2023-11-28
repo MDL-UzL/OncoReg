@@ -1,46 +1,36 @@
 #!/usr/bin/env python
+
 import torch
 import sys
-from vxmplusplus_utils import get_vxmpp_models,return_crops
-sys.path.insert(0,'corrfield/')
-from thin_plate_spline import *
-from tqdm import trange,tqdm
-from vxmplusplus_utils import adam_mind
-import argparse
-import numpy as np
-import time
-from data_utils import read_image_folder
-from data_utils import get_files
-from torch.utils.tensorboard import SummaryWriter
 import os
+import time
+import argparse
+from tqdm import trange,tqdm
+from utils.vxmplusplus_utils import get_vxmpp_models,return_crops
+from utils.thin_plate_spline import *
+from utils.data_utils import get_files
+from torch.utils.tensorboard import SummaryWriter
+
+data_dir = 'data/'
+dir_save = 'output/'
 
 def main(args):
     
-    #img_insp_all,img_exp_all,keypts_insp_all,mind_insp_all,mind_exp_all,orig_shapes_all,case_list = read_image_folder(args.imgfolder,args.maskfolder,do_MIND=False)
-    data_dir = "/home/heyer/storage/staff/wiebkeheyer/data/ThoraxCBCT/ThoraxCBCT_final_data/"
-    kpt_dir = '/home/heyer/storage/staff/wiebkeheyer/data/ThoraxCBCT/L2R_baselines/convexAdam/keypointsTr/'
-    task = 'ThoraxCBCT'
+    #data_dir = "/home/heyer/storage/staff/wiebkeheyer/data/ThoraxCBCT/ThoraxCBCT_final_data/"
+    #task = 'ThoraxCBCT'
+    #data_dir = args.datadir
+    task = args.task
     mode = 'Tr'
     do_MIND = False
-
-    do_save = True  #  Write model and tensorboard logs?
-    dir_save = '/home/heyer/storage/staff/wiebkeheyer/oncoreg/OncoReg/vxmpp/models/vxmpp_11_24'
-    if do_save and not os.path.exists(dir_save):
-        os.makedirs(dir_save)
+    do_save = False  #  Write model and tensorboard logs?
+    #dir_save = args.outdir
+    #if do_save and not os.path.exists(dir_save):
+    #    os.makedirs(dir_save)
     
-    img_fixed_all, img_moving_all, kpts_all, case_list, orig_shapes_all, mind_fixed_all, mind_moving_all, keypts_fixed_all, img_mov_unmasked = get_files(data_dir, kpt_dir, task, mode, do_MIND)
+    img_fixed_all, img_moving_all, kpts_fixed_all, kpts_moving_all, case_list, orig_shapes_all, mind_fixed_all, mind_moving_all, keypts_fixed_all, img_mov_unmasked, aff_mov_all = get_files(data_dir, task, mode, do_MIND)
 
 
     unet_model,heatmap,mesh = get_vxmpp_models()
-    
-    '''
-    #read corrfield supervision
-    corrfield_all = []
-    for ii in trange(len(case_list)):
-        i = int(case_list[ii].split('ThoraxCBCT_')[1].split('_0001.csv')[0])
-        cf = torch.from_numpy(np.loadtxt('/home/heyer/storage/staff/wiebkeheyer/data/ThoraxCBCT/L2R_baselines/convexAdam/keypointsTr/ThoraxCBCT_'+str(i).zfill(4)+'.csv',delimiter=',')).float()
-
-        corrfield_all.append(cf)'''
     
     if do_save:  writer = SummaryWriter(log_dir=dir_save)
 
@@ -67,11 +57,12 @@ def main(args):
 
                     H,W,D = fixed_img.shape[-3:]
 
-                    cf = kpts_all[ii]
+                    cf_fixed = kpts_fixed_all[ii]
+                    cf_moving = kpts_moving_all[ii]
 
                     #halfres keypts
-                    keypts_fix = torch.flip((cf[:,:3]-torch.tensor([H,W,D]))/torch.tensor([H,W,D]),(1,)).cuda()
-                    keypts_mov = torch.flip((cf[:,3:]-torch.tensor([H,W,D]))/torch.tensor([H,W,D]),(1,)).cuda()
+                    keypts_fix = torch.flip((cf_fixed-torch.tensor([H,W,D]))/torch.tensor([H,W,D]),(1,)).cuda()
+                    keypts_mov = torch.flip((cf_moving-torch.tensor([H,W,D]))/torch.tensor([H,W,D]),(1,)).cuda()
 
                     #Affine augmentation of images *and* keypoints 
                     if(i%2==0):
@@ -130,27 +121,17 @@ def main(args):
                 if do_save:  writer.add_scalar("train_loss", loss, i)
                
         if(repeat==0):
-            torch.save([heatmap.state_dict(),unet_model.state_dict(),run_loss],'/home/heyer/storage/staff/wiebkeheyer/oncoreg/OncoReg/vxmpp/models/vxmpp_11_24/vxmpp_11_24.pth')
+            torch.save([heatmap.state_dict(),unet_model.state_dict(),run_loss],args.outdir + 'vxmpp_0.pth')
         else:
-            torch.save([heatmap.state_dict(),unet_model.state_dict(),run_loss],'/home/heyer/storage/staff/wiebkeheyer/oncoreg/OncoReg/vxmpp/models/vxmpp_11_24/vxmpp_11_24.pth')        
+            torch.save([heatmap.state_dict(),unet_model.state_dict(),run_loss],args.outdir + 'vxmpp.pth')        
 
-
-
-        
-        
 
 if __name__ == "__main__":
-
-    #parser = argparse.ArgumentParser(description = 'training of VoxelMorph++ on Lung250M-4B')
-
-    #parser.add_argument('-m',  '--maskfolder',   default='masksTr', help="mask folder containing (/case_???_{1,2}.nii.gz)")
-    #parser.add_argument('-I',  '--imgfolder',    default='imagesTr', help="image folder containing (/case_???_{1,2}.nii.gz)")
-    #parser.add_argument('-O',  '--outfile',      default='registration_models/voxelmorphplusplus.pth', help="output file for trained model")
-
-    #args = parser.parse_args(args=[])
-    #args = parser.parse_args()
-    #print(args)
-    args=None
+    parser = argparse.ArgumentParser(description = 'Training of VoxelMorph++')
+    #parser.add_argument('-i',  '--datadir',   default='ThoraxCBCT', help="data folder containing imagesTr, masksTr, keypoints01Tr, keypoints02Tr")
+    parser.add_argument('-t',  '--task',      default='ThoraxCBCT', help="task/dataset: ThoraxCBCT or OncoReg")
+    #parser.add_argument('-o',  '--outdir',    default='models', help="output folder for trained model and tensorboard log")
+    args = parser.parse_args()
     main(args)
 
 

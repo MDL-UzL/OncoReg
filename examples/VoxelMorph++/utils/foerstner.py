@@ -1,8 +1,8 @@
 import torch
 import torch.nn.functional as F
 
-from filters import *
-from utils import *
+from utils.filters import *
+from utils.utils import *
 
 def structure_tensor(img, sigma):
     B, C, D, H, W = img.shape

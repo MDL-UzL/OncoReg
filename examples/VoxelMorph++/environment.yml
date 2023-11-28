@@ -1,0 +1,17 @@
+name: OncoReg
+channels:
+  - conda
+  - pytorch
+dependencies:
+  - sys
+  - time
+  - argparse
+  - os
+  - scipy
+  - nibabel
+  - numpy
+  - pytorch
+  - cudatoolkit=11.3
+  - matplotlib
+  - tqdm
+  - torchvision
