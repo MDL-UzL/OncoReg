@@ -129,7 +129,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'Training of VoxelMorph++')
     #parser.add_argument('-i',  '--datadir',   default='ThoraxCBCT', help="data folder containing imagesTr, masksTr, keypoints01Tr, keypoints02Tr")
-    parser.add_argument('-t',  '--task',      default='ThoraxCBCT', help="task/dataset: ThoraxCBCT or OncoReg")
+    parser.add_argument('task',      default='ThoraxCBCT', help="task/dataset: ThoraxCBCT or OncoReg")
     #parser.add_argument('-o',  '--outdir',    default='models', help="output folder for trained model and tensorboard log")
     args = parser.parse_args()
     main(args)

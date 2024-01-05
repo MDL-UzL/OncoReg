@@ -122,8 +122,8 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description = 'Inference of VoxelMorph++')
     #parser.add_argument('-i',  '--datadir',   default='ThoraxCBCT', help="data folder containing imagesTr, masksTr, keypoints01Tr, keypoints02Tr")
-    parser.add_argument('-t',  '--task',      default='ThoraxCBCT', help="task/dataset: ThoraxCBCT or OncoReg")
-    parser.add_argument('-m',  '--mode',      default='Ts', help="Run inference on validation ('Val') or test ('Ts') data")
+    parser.add_argument('task',      default='ThoraxCBCT', help="task/dataset: ThoraxCBCT or OncoReg")
+    parser.add_argument('mode',      default='Ts', help="Run inference on validation ('Val') or test ('Ts') data")
     #parser.add_argument('-M',  '--model',     default='models/vxmpp.pth', help="model file (pth)")
     #parser.add_argument('-o',  '--outdir',    default='results', help="output folder for individual keypoint displacement predictions, displacement fields and warped images")
     args = parser.parse_args()

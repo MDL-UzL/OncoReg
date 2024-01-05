@@ -1,14 +1,9 @@
-import nibabel as nib
+
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import matplotlib.pyplot as plt
-import os
 import math
-import struct
-import csv
-import time
 
 def gpu_usage():
     print('gpu usage (current/max): {:.2f} / {:.2f} GB'.format(torch.cuda.memory_allocated()*1e-9, torch.cuda.max_memory_allocated()*1e-9))
