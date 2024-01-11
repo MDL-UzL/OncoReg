@@ -27,7 +27,7 @@ def main(args):
     unet_model,heatmap,mesh = get_vxmpp_models()
 
     for repeat in range(2):
-        num_iterations = 4*4900
+        num_iterations = 4#*4900
         optimizer = torch.optim.Adam(list(unet_model.parameters())+list(heatmap.parameters()),lr=0.001)#0.001
         scaler = torch.cuda.amp.GradScaler()
         scheduler = torch.optim.lr_scheduler.StepLR(optimizer,4*700,0.5)

@@ -12,12 +12,9 @@ from utils.vxmplusplus_utils import adam_mind,get_vxmpp_models,return_crops
 from utils.thin_plate_spline import thin_plate_dense
 from utils.data_utils import get_files
 
-#data_dir = 'data/'
-data_dir = '/home/heyer/storage/staff/wiebkeheyer/data/ThoraxCBCT/ThoraxCBCT_OncoReg_Release/'
-#model = 'model/vxmpp.pth'
-model = '/home/heyer/storage/staff/wiebkeheyer/repos/OncoReg/results/OncoReg_Release/vxmpp.pth'
-#outfolder = 'results/'
-outfolder = '/home/heyer/storage/staff/wiebkeheyer/repos/OncoReg/results/OncoReg_Release/'
+data_dir = 'data/'
+model = 'model/vxmpp.pth'
+outfolder = 'results/'
 
 def main(args):
     
@@ -105,7 +102,7 @@ def main(args):
             disp_lr = disp_lr[0].numpy()
             displacement_field = nib.Nifti1Image(disp_lr, aff_mov)
             nib.save(displacement_field, outfolder + '/disp_' + case.split('T_')[1] + '_' +case.split('_')[1] + '_0000.nii.gz')
-            logging.info('Displacemnentfield saved')
+            logging.info('Displacement field saved')
              
 
 if __name__ == "__main__":
