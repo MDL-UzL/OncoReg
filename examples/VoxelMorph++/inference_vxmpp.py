@@ -15,9 +15,12 @@ from utils.data_utils import get_files
 #os.environ['CUDA_DEVICE_ORDER']='PCI_BUS_ID'
 #os.environ['CUDA_VISIBLE_DEVICES']='6'
 
-data_dir = 'data/'
-model = 'model/vxmpp.pth'
-outfolder = 'results/'
+#data_dir = 'data/'
+data_dir = '/home/heyer/storage/staff/wiebkeheyer/data/ThoraxCBCT/ThoraxCBCT_OncoReg_Release/'
+#model = 'model/vxmpp.pth'
+model = '/home/heyer/storage/staff/wiebkeheyer/repos/OncoReg/results/OncoReg_Release/vxmpp.pth'
+#outfolder = 'results/'
+outfolder = '/home/heyer/storage/staff/wiebkeheyer/repos/OncoReg/results/OncoReg_Release/'
 
 def main(args):
     

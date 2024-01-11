@@ -2,4 +2,4 @@
 
 task=$1
 
-./train_vxmpp_supervised.py $task
+python ./train_vxmpp_supervised_docker.py $task
