@@ -11,6 +11,10 @@ Please include logging in you submission, as can be seen in this example.
 
 It is advised to copy our train.sh / test.sh structure and you may also look at our data loading process as it is easy adaptable from ThoraxCBCT to OncoReg.
 
+## How To
+
+Download our ThoraxCBCT dataset including training and validation data, keypoints, masks and the **ThoraxCBCT_dataset.json**:  
+https://cloud.imi.uni-luebeck.de/s/xQPEy4sDDnHsmNg
 
 Build the docker:
 
@@ -18,16 +22,16 @@ Build the docker:
 docker build -t vxmpp /OncoReg/examples/VoxelMorph++/
 ```
 
-Run docker and start training:
+Run docker and start training (insert path to ThoraxCBCT data):
 
 ```
 docker run --gpus all --entrypoint ./train.sh -v /PATH_TO_DATA_DIR/:/oncoreg/data -v ./model/:/oncoreg/model/ vxmpp ThoraxCBCT
 ```
 
-Run inference:
+Run inference (insert path to ThoraxCBCT data):
 
 ```
-docker run --gpus all --entrypoint ./test.sh -v /data/oncoreg/ThoraxCBCT_OncoReg_Release/:/oncoreg/data -v ./model/:/oncoreg/model/ -v ./results/:/oncoreg/results/ vxmpp ThoraxCBCT Val
+docker run --gpus all --entrypoint ./test.sh -v /PATH_TO_DATA_DIR/:/oncoreg/data -v ./model/:/oncoreg/model/ -v ./results/:/oncoreg/results/ vxmpp ThoraxCBCT Val
 ```
 
 
