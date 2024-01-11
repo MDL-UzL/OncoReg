@@ -15,19 +15,19 @@ It is advised to copy our train.sh / test.sh structure and you may also look at 
 Build the docker:
 
 ```
-docker build -t vxmpp /examples/VoxelMorph++/
+docker build -t vxmpp /OncoReg/examples/VoxelMorph++/
 ```
 
 Run docker and start training:
 
 ```
-docker run ...
+docker run --gpus all --entrypoint ./train.sh -v /PATH_TO_DATA_DIR/:/oncoreg/data -v ./model/:/oncoreg/model/ vxmpp ThoraxCBCT
 ```
 
 Run inference:
 
 ```
-docker run ...
+docker run --gpus all --entrypoint ./test.sh -v /data/oncoreg/ThoraxCBCT_OncoReg_Release/:/oncoreg/data -v ./model/:/oncoreg/model/ -v ./results/:/oncoreg/results/ vxmpp ThoraxCBCT Val
 ```
 
 
