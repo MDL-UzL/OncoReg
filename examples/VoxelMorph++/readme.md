@@ -25,13 +25,20 @@ docker build -t vxmpp /PATH_TO/OncoReg/examples/VoxelMorph++/
 Run docker and start training (insert path to ThoraxCBCT data):
 
 ```
-docker run --gpus all --entrypoint ./train.sh -v /PATH_TO_DATA_DIR/:/oncoreg/data -v ./model/:/oncoreg/model/ vxmpp ThoraxCBCT
+docker run --gpus all --entrypoint ./train.sh
+-v /PATH_TO_DATA_DIR/:/oncoreg/data
+-v ./model/:/oncoreg/model/
+vxmpp ThoraxCBCT
 ```
 
 Run inference (insert path to ThoraxCBCT data):
 
 ```
-docker run --gpus all --entrypoint ./test.sh -v /PATH_TO_DATA_DIR/:/oncoreg/data -v ./model/:/oncoreg/model/ -v ./results/:/oncoreg/results/ vxmpp ThoraxCBCT Val
+docker run --gpus all --entrypoint ./test.sh
+-v /PATH_TO_DATA_DIR/:/oncoreg/data
+-v ./model/:/oncoreg/model/
+-v ./results/:/oncoreg/results/
+vxmpp ThoraxCBCT Val
 ```
 
 ## Usage without Docker
