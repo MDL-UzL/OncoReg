@@ -34,4 +34,8 @@ Run inference (insert path to ThoraxCBCT data):
 docker run --gpus all --entrypoint ./test.sh -v /PATH_TO_DATA_DIR/:/oncoreg/data -v ./model/:/oncoreg/model/ -v ./results/:/oncoreg/results/ vxmpp ThoraxCBCT Val
 ```
 
+## Usage without Docker
+
+If you want to use our example without docker containerisation you can do so by creating an environment directly via the requirements.txt and then run the two scripts 'train_vxmpp_supervised.py' and 'inference_vxmpp.py' after adjusting the paths at the beginning of the scripts. 
+
 
