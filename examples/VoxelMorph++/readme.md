@@ -44,3 +44,8 @@ python inference_vxmpp.py <task> <Val/Ts>
 
 
 
+
+### References
+Heinrich, Mattias P., and Lasse Hansen. "Voxelmorph++ going beyond the cranial vault with keypoint supervision and multi-channel instance optimisation." International Workshop on Biomedical Image Registration. Cham: Springer International Publishing, 2022. https://link.springer.com/chapter/10.1007/978-3-031-11203-4_10  
+
+For more information on VoxelMorph++ see https://github.com/mattiaspaul/VoxelMorphPlusPlus.
