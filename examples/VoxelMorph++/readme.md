@@ -19,7 +19,7 @@ https://cloud.imi.uni-luebeck.de/s/xQPEy4sDDnHsmNg
 Build the docker:
 
 ```
-docker build -t vxmpp /OncoReg/examples/VoxelMorph++/
+docker build -t vxmpp /PATH_TO/OncoReg/examples/VoxelMorph++/
 ```
 
 Run docker and start training (insert path to ThoraxCBCT data):
