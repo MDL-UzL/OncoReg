@@ -36,6 +36,11 @@ docker run --gpus all --entrypoint ./test.sh -v /PATH_TO_DATA_DIR/:/oncoreg/data
 
 ## Usage without Docker
 
-If you want to use our example without docker containerisation you can do so by creating an environment directly via the requirements.txt and then run the two scripts 'train_vxmpp_supervised.py' and 'inference_vxmpp.py' after adjusting the paths at the beginning of the scripts. 
+If you want to use our example without docker containerisation you can do so by creating an environment directly via the requirements.txt and then run the training and inference scripts after adjusting the paths at the beginning of the scripts:
+```
+python train_vxmpp_supervised.py <task>
+python inference_vxmpp.py <task> <Val/Ts>
+```
+
 
 
