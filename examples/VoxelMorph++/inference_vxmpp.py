@@ -6,61 +6,41 @@ from tqdm import trange
 import argparse
 import numpy as np
 import nibabel as nib
-import os
+import logging 
 from scipy.ndimage.interpolation import zoom as zoom
 from utils.vxmplusplus_utils import adam_mind,get_vxmpp_models,return_crops
 from utils.thin_plate_spline import thin_plate_dense
 from utils.data_utils import get_files
 
-#os.environ['CUDA_DEVICE_ORDER']='PCI_BUS_ID'
-#os.environ['CUDA_VISIBLE_DEVICES']='6'
-
-#data_dir = 'data/'
-data_dir = '/home/heyer/storage/staff/wiebkeheyer/data/ThoraxCBCT/ThoraxCBCT_OncoReg_Release/'
-#model = 'model/vxmpp.pth'
-model = '/home/heyer/storage/staff/wiebkeheyer/repos/OncoReg/results/OncoReg_Release/vxmpp.pth'
-#outfolder = 'results/'
-outfolder = '/home/heyer/storage/staff/wiebkeheyer/repos/OncoReg/results/OncoReg_Release/'
+data_dir = 'data/'
+model = 'model/vxmpp.pth'
+outfolder = 'results/'
 
 def main(args):
     
-    #data_dir = "/home/heyer/storage/staff/wiebkeheyer/data/ThoraxCBCT/ThoraxCBCT_final_data/"
-    #task = 'ThoraxCBCT'
-    #mode = 'Ts'
-    #outfolder = '/home/heyer/storage/staff/wiebkeheyer/oncoreg/OncoReg/vxmpp/results/vxmpp_11_24'
-    
-    #data_dir = args.datadir
     task = args.task
     mode = args.mode
-    #outfile = '/home/heyer/storage/staff/wiebkeheyer/oncoreg/OncoReg/vxmpp/results/vxmpp_11_24/predictions.pth'
-    #model = args.model
-    #outfolder = args.outdir
-    if not os.path.exists(outfolder):
-        os.makedirs(outfolder)
+
     do_MIND = True
+    
+    logging.info('Loading data')
     img_fixed_all, img_moving_all, kpts_fixed_all, kpts_moving_all, case_list, orig_shapes_all, mind_fixed_all, mind_moving_all, keypts_fixed_all, img_mov_unmasked, aff_mov_all = get_files(data_dir, task, mode, do_MIND)
 
     unet_model,heatmap,mesh = get_vxmpp_models()
 
+    logging.info('Loading model')
     state_dicts = torch.load(model)
     unet_model.load_state_dict(state_dicts[1])
     heatmap.load_state_dict(state_dicts[0])
 
-    print('inference for validation scans with TRE computation ')
-
     predictions = []
     
     for case in trange(len(case_list)):
-        #ii = int(case_list[case].split('case_')[1])
-
         ##MASKED INPUT IMAGES ARE HALF-RESOLUTION
-        #dataset = datasets[ii]
         with torch.no_grad():
             fixed_img = img_fixed_all[case]
             moving_img = img_moving_all[case]
             keypts_fix = keypts_fixed_all[case].squeeze().cuda()
-
-
             H,W,D = fixed_img.shape[-3:]
 
             fixed_img = fixed_img.view(1,1,H,W,D).cuda()
@@ -79,7 +59,7 @@ def main(args):
 
 
         ##NOW EVERYTHING FULL-RESOLUTION
-        H,W,D = orig_shapes_all[case]#.shape[-3:]
+        H,W,D = orig_shapes_all[case]
 
         fixed_mind = mind_fixed_all[case].view(1,-1,H//2,W//2,D//2).cuda()
         moving_mind = mind_moving_all[case].view(1,-1,H//2,W//2,D//2).cuda()
@@ -91,12 +71,14 @@ def main(args):
     torch.save({'keypts_mov_predict':predictions,'case_list':case_list,'keypts_fix':keypts_fixed_all},outfolder + '/predictions.pth')
     if(outfolder is not None):
         for i in range(len(case_list)):
+            logging.info('Case:'+str(i))
             case = case_list[i]
             output_path = outfolder+'/'+case
             H,W,D = orig_shapes_all[i]
             kpts_fix = torch.flip(keypts_fixed_all[i].squeeze(),(1,))*torch.tensor([H/2,W/2,D/2])+torch.tensor([H/2,W/2,D/2])
             kpts_moved = torch.flip(predictions[i].squeeze(),(1,))*torch.tensor([H/2,W/2,D/2])+torch.tensor([H/2,W/2,D/2])
             np.savetxt('{}.csv'.format(output_path), torch.cat([kpts_fix, kpts_moved], dim=1).cpu().numpy(), delimiter=",", fmt='%.3f')
+            logging.info('Keypoints saved')
 
             img_mov = img_mov_unmasked[i]
             aff_mov = aff_mov_all[i]
@@ -109,6 +91,7 @@ def main(args):
             warped_img = F.grid_sample(img_mov.view(1,1,H,W,D),dense_flow.cpu()+F.affine_grid(torch.eye(3,4).unsqueeze(0),(1,1,H,W,D))).squeeze()
             warped = nib.Nifti1Image(warped_img.numpy(), aff_mov)  
             nib.save(warped, outfolder + '/warped_' + case.split('T_')[1] + '.nii.gz')
+            logging.info('Warped image saved')
             
             dense_flow = dense_flow.cpu().flip(4).permute(0, 4, 1, 2, 3) * torch.tensor( [H - 1, W - 1, D - 1]).view(1, 3, 1, 1, 1) / 2
             grid_sp = 1
@@ -119,16 +102,17 @@ def main(args):
             disp_lr = disp_lr[0].numpy()
             displacement_field = nib.Nifti1Image(disp_lr, aff_mov)
             nib.save(displacement_field, outfolder + '/disp_' + case.split('T_')[1] + '_' +case.split('_')[1] + '_0000.nii.gz')
+            logging.info('Displacement field saved')
              
 
 if __name__ == "__main__":
 
+    logging.basicConfig(level=logging.INFO,format="%(asctime)s [%(levelname)s] %(message)s",\
+        handlers=[logging.FileHandler(outfolder+"debug.log"),logging.StreamHandler()])
+    
     parser = argparse.ArgumentParser(description = 'Inference of VoxelMorph++')
-    #parser.add_argument('-i',  '--datadir',   default='ThoraxCBCT', help="data folder containing imagesTr, masksTr, keypoints01Tr, keypoints02Tr")
     parser.add_argument('task',      default='ThoraxCBCT', help="task/dataset: ThoraxCBCT or OncoReg")
     parser.add_argument('mode',      default='Ts', help="Run inference on validation ('Val') or test ('Ts') data")
-    #parser.add_argument('-M',  '--model',     default='models/vxmpp.pth', help="model file (pth)")
-    #parser.add_argument('-o',  '--outdir',    default='results', help="output folder for individual keypoint displacement predictions, displacement fields and warped images")
     args = parser.parse_args()
     main(args)
 

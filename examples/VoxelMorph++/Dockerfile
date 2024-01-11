@@ -13,8 +13,8 @@ RUN pip3 install -r requirements.txt
 COPY utils ./utils
 COPY test.sh .
 COPY train.sh .
-COPY inference_vxmpp_docker.py .
-COPY train_vxmpp_supervised_docker.py .
+COPY inference_vxmpp.py .
+COPY train_vxmpp_supervised.py .
 
 RUN chmod +x test.sh
 RUN chmod +x train.sh
