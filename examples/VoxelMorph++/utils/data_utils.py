@@ -11,7 +11,7 @@ from utils.vxmplusplus_utils import MINDSSC
 
 def get_files(data_dir, task, mode, do_MIND):
 
-    if task == "ThoraxCBCT":
+    if task == "ThoraxCBCT" or task == "OncoReg":
         data_json = os.path.join(data_dir, task + "_dataset.json")
         with open(data_json) as file:
             data = json.load(file)
