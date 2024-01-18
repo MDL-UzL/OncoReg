@@ -1,0 +1,91 @@
+{
+    "task_name": "ThoraxCBCT",
+    "evaluation_methods": [
+        {
+            "name": "LogJacDetStd",
+            "metric": "sdlogj"
+        },
+        {
+            "name": "TRE_kp",
+            "metric": "tre",
+            "dest": "keypoints" 
+        },
+        {
+            "name": "TRE_lm",
+            "metric": "tre",
+            "dest": "landmarks"
+        },
+        {
+            "name": "DSC",
+            "metric": "dice",
+            "labels": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13
+            ]
+        },
+        {
+            "name": "HD95",
+            "metric": "hd95",
+            "labels": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13
+            ]
+        }
+    ],
+    "expected_shape": [
+        256,
+        192,
+        192,
+        3
+    ],
+    "eval_pairs": [
+        {
+            "fixed": "./imagesTr/ThoraxCBCT_0011_0001.nii.gz",
+            "moving": "./imagesTr/ThoraxCBCT_0011_0000.nii.gz"
+        },
+        {
+            "fixed": "./imagesTr/ThoraxCBCT_0012_0001.nii.gz",
+            "moving": "./imagesTr/ThoraxCBCT_0012_0000.nii.gz"
+        },
+        {
+            "fixed": "./imagesTr/ThoraxCBCT_0013_0001.nii.gz",
+            "moving": "./imagesTr/ThoraxCBCT_0013_0000.nii.gz"
+        },
+        {
+            "fixed": "./imagesTr/ThoraxCBCT_0011_0002.nii.gz",
+            "moving": "./imagesTr/ThoraxCBCT_0011_0000.nii.gz"
+        },
+        {
+            "fixed": "./imagesTr/ThoraxCBCT_0012_0002.nii.gz",
+            "moving": "./imagesTr/ThoraxCBCT_0012_0000.nii.gz"
+        },
+        {
+            "fixed": "./imagesTr/ThoraxCBCT_0013_0002.nii.gz",
+            "moving": "./imagesTr/ThoraxCBCT_0013_0000.nii.gz"
+        }
+    ],
+    "eval_config_version": 0.2,
+    "masked_evaluation": true
+}

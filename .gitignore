@@ -1,3 +1,4 @@
 examples/VoxelMorph++/utils/__pycache__/
 results/
 model/
+evaluation/__pycache__/

@@ -1,0 +1,107 @@
+{
+    "task_name": "ThoraxCBCT",
+    "evaluation_methods": [
+        {
+            "name": "LogJacDetStd",
+            "metric": "sdlogj"
+        },
+        {
+            "name": "DSC",
+            "metric": "dice",
+            "labels": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13
+            ]
+        },
+        {
+            "name": "HD95",
+            "metric": "hd95",
+            "labels": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13
+            ]
+        },
+        {
+            "name": "TRE_kp",
+            "metric": "tre",
+            "dest": "keypoints"
+        },
+        {
+            "name": "TRE_lm",
+            "metric": "tre",
+            "dest": "landmarks"
+        }
+    ],
+    "expected_shape": [
+        256,
+        192,
+        192,
+        3
+    ],
+    "eval_pairs": [
+        {
+            "fixed": "./imagesTs/ThoraxCBCT_0014_0001.nii.gz",
+            "moving": "./imagesTs/ThoraxCBCT_0014_0000.nii.gz"
+        },
+        {
+            "fixed": "./imagesTs/ThoraxCBCT_0014_0002.nii.gz",
+            "moving": "./imagesTs/ThoraxCBCT_0014_0000.nii.gz"
+        },
+        {
+            "fixed": "./imagesTs/ThoraxCBCT_0015_0001.nii.gz",
+            "moving": "./imagesTs/ThoraxCBCT_0015_0000.nii.gz"
+        },
+        {
+            "fixed": "./imagesTs/ThoraxCBCT_0015_0002.nii.gz",
+            "moving": "./imagesTs/ThoraxCBCT_0015_0000.nii.gz"
+        },
+        {
+            "fixed": "./imagesTs/ThoraxCBCT_0016_0001.nii.gz",
+            "moving": "./imagesTs/ThoraxCBCT_0016_0000.nii.gz"
+        },
+        {
+            "fixed": "./imagesTs/ThoraxCBCT_0016_0002.nii.gz",
+            "moving": "./imagesTs/ThoraxCBCT_0016_0000.nii.gz"
+        },       
+        {
+            "fixed": "./imagesTs/ThoraxCBCT_0017_0001.nii.gz",
+            "moving": "./imagesTs/ThoraxCBCT_0017_0000.nii.gz"
+        },
+        {
+            "fixed": "./imagesTs/ThoraxCBCT_0017_0002.nii.gz",
+            "moving": "./imagesTs/ThoraxCBCT_0017_0000.nii.gz"
+        },      
+        {
+            "fixed": "./imagesTs/ThoraxCBCT_0018_0001.nii.gz",
+            "moving": "./imagesTs/ThoraxCBCT_0018_0000.nii.gz"
+        },
+        {
+            "fixed": "./imagesTs/ThoraxCBCT_0018_0002.nii.gz",
+            "moving": "./imagesTs/ThoraxCBCT_0018_0000.nii.gz"
+        }
+    ],
+    "eval_config_version": 0.2,
+    "masked_evaluation": true
+}
